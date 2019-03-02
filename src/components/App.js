@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "./App.css";
 import Form from "./Form";
 
+const keyAPI = "ba52775ef319f91df47235c71719713f";
+
 class App extends Component {
   state = {
     value: "",
@@ -10,7 +12,7 @@ class App extends Component {
     minTemp: "",
     maxTemp: "",
     wind: "",
-    err: ""
+    err: false
   };
 
   handleInputChange = e => {
@@ -21,7 +23,29 @@ class App extends Component {
 
   handleCitySubmit = e => {
     e.preventDefault();
-    console.log("ok");
+
+    const API = `http://api.openweathermap.org/data/2.5/weather?q=${
+      this.state.value
+    }&APPID=${keyAPI}&units=metric`;
+
+    fetch(API)
+      .then(response => {
+        if (response.status === 200) {
+          return response;
+        }
+        throw Error("I got a feeling something went wrong");
+      })
+      .then(respone => respone.json())
+      .then(data => {
+        this.setState({
+          err: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          err: true
+        });
+      });
   };
 
   render() {
