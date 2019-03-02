@@ -13,6 +13,7 @@ class App extends Component {
     minTemp: "",
     maxTemp: "",
     wind: "",
+    city: "",
     err: false
   };
 
@@ -38,14 +39,23 @@ class App extends Component {
       })
       .then(respone => respone.json())
       .then(data => {
-        this.setState({
+        const time = new Date().toLocaleString();
+
+        this.setState(prevState => ({
+          date: time,
+          temp: data.main.temp,
+          minTemp: data.main.temp_min,
+          maxTemp: data.main.temp_max,
+          wind: data.wind.speed,
+          city: prevState.value,
           err: false
-        });
+        }));
       })
       .catch(err => {
-        this.setState({
-          err: true
-        });
+        this.setState(prevState => ({
+          err: true,
+          city: prevState.value
+        }));
       });
   };
 
@@ -57,7 +67,7 @@ class App extends Component {
           change={this.handleInputChange}
           submit={this.handleCitySubmit}
         />
-        <Result error={this.state.err} />
+        <Result error={this.state.err} weather={this.state} />
       </div>
     );
   }
