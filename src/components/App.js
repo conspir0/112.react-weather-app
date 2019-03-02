@@ -23,41 +23,80 @@ class App extends Component {
     });
   };
 
-  handleCitySubmit = e => {
-    e.preventDefault();
+  // 1st version
+  // handleCitySubmit = e => {
+  //   e.preventDefault();
 
-    const API = `http://api.openweathermap.org/data/2.5/weather?q=${
-      this.state.value
-    }&APPID=${keyAPI}&units=metric`;
+  //   const API = `http://api.openweathermap.org/data/2.5/weather?q=${
+  //     this.state.value
+  //   }&APPID=${keyAPI}&units=metric`;
 
-    fetch(API)
-      .then(response => {
-        if (response.status === 200) {
-          return response;
-        }
-        throw Error("I got a feeling something went wrong");
-      })
-      .then(respone => respone.json())
-      .then(data => {
-        const time = new Date().toLocaleString();
+  //   fetch(API)
+  //     .then(response => {
+  //       if (response.status === 200) {
+  //         return response;
+  //       }
+  //       throw Error("I got a feeling something went wrong");
+  //     })
+  //     .then(respone => respone.json())
+  //     .then(data => {
+  //       const time = new Date().toLocaleString();
 
-        this.setState(prevState => ({
-          date: time,
-          temp: data.main.temp,
-          minTemp: data.main.temp_min,
-          maxTemp: data.main.temp_max,
-          wind: data.wind.speed,
-          city: prevState.value,
-          err: false
-        }));
-      })
-      .catch(err => {
-        this.setState(prevState => ({
-          err: true,
-          city: prevState.value
-        }));
-      });
-  };
+  //       this.setState(prevState => ({
+  //         date: time,
+  //         temp: data.main.temp,
+  //         minTemp: data.main.temp_min,
+  //         maxTemp: data.main.temp_max,
+  //         wind: data.wind.speed,
+  //         city: prevState.value,
+  //         err: false
+  //       }));
+  //     })
+  //     .catch(err => {
+  //       this.setState(prevState => ({
+  //         err: true,
+  //         city: prevState.value
+  //       }));
+  //     });
+  // };
+
+  // 2nd version
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.value.length <= 2) return null;
+    if (prevState.value !== this.state.value) {
+      const API = `http://api.openweathermap.org/data/2.5/weather?q=${
+        this.state.value
+      }&APPID=${keyAPI}&units=metric`;
+
+      fetch(API)
+        .then(response => {
+          if (response.status === 200) {
+            return response;
+          }
+          throw Error("I got a feeling something went wrong");
+        })
+        .then(respone => respone.json())
+        .then(data => {
+          const time = new Date().toLocaleString();
+
+          this.setState(prevState => ({
+            date: time,
+            temp: data.main.temp,
+            minTemp: data.main.temp_min,
+            maxTemp: data.main.temp_max,
+            wind: data.wind.speed,
+            city: prevState.value,
+            err: false
+          }));
+        })
+        .catch(err => {
+          this.setState(prevState => ({
+            err: true,
+            city: prevState.value
+          }));
+        });
+    }
+  }
 
   render() {
     return (
@@ -65,7 +104,7 @@ class App extends Component {
         <Form
           value={this.state.value}
           change={this.handleInputChange}
-          submit={this.handleCitySubmit}
+          // submit={this.handleCitySubmit}
         />
         <Result error={this.state.err} weather={this.state} />
       </div>
