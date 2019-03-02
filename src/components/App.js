@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import Form from "./Form";
+import Result from "./Result";
 
 const keyAPI = "ba52775ef319f91df47235c71719713f";
 
@@ -56,6 +57,7 @@ class App extends Component {
           change={this.handleInputChange}
           submit={this.handleCitySubmit}
         />
+        <Result error={this.state.err} />
       </div>
     );
   }
